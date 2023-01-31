@@ -12,3 +12,5 @@ export interface iMovieRespose extends iMovieRequest {
 }
 
 export type iAddMovieResponse = QueryResult<iMovieRespose>;
+
+export type iRequiredMovieKeys = "name" | "duration" | "price";
