@@ -8,8 +8,10 @@ const client = new Client({
   port: 5432,
 });
 
-client.connect();
-console.log("Database successfully connected");
+export const startDatabase = () => {
+  client.connect();
+  console.log("Database successfully connected");
+};
 
-client.end();
-console.log("Connection to dabatase ended");
+// client.end();
+// console.log("Connection to dabatase ended");
