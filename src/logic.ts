@@ -30,7 +30,7 @@ export const listMovies = async (
   request: Request,
   response: Response
 ): Promise<Response> => {
-  const queryString = `
+  const queryOrder: string = `
             SELECT
                 *
             FROM
@@ -38,7 +38,7 @@ export const listMovies = async (
             `;
 
   const moviesList: iMovieRespose[] | void = await (
-    await client.query(queryString)
+    await client.query(queryOrder)
   ).rows;
   return response.json(moviesList);
 };
