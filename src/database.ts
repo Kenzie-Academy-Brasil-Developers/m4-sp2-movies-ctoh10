@@ -1,6 +1,6 @@
 import { Client } from "pg";
 
-const client = new Client({
+export const client = new Client({
   user: "luism",
   password: "k3nzi3",
   host: "localhost",
