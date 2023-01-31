@@ -24,9 +24,14 @@ export const movieExists = async (
     await client.query(queryString)
   ).rows;
 
-  //   const exists = allMovies.find(
-  //     (movieName: string) => movieName.name === request.body.name
-  //   );
+  const exists = allMovies.find(
+    (movieName: iMovieRespose) => movieName.name === request.body.name
+  );
+  if (exists) {
+    return response
+      .status(409)
+      .json({ message: `${request.body.name} already exists` });
+  }
 
-  return response.status(200).json(allMovies);
+  return next();
 };

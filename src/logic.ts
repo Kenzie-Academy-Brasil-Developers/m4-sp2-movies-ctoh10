@@ -25,3 +25,20 @@ export const addMovie = async (
 
   return response.status(201).json(newMovie);
 };
+
+export const listMovies = async (
+  request: Request,
+  response: Response
+): Promise<Response> => {
+  const queryString = `
+            SELECT
+                *
+            FROM
+                movies
+            `;
+
+  const moviesList: iMovieRespose[] | void = await (
+    await client.query(queryString)
+  ).rows;
+  return response.json(moviesList);
+};
