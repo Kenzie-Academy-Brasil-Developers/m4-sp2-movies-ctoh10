@@ -15,5 +15,6 @@
   },
   "dependencies": {
     "express": "^4.18.2"
-  }
+  },
+  "repository": "git@github.com:Kenzie-Academy-Brasil-Developers/m4-sp2-movies-ctoh10.git"
 }
