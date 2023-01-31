@@ -22,6 +22,22 @@ export const validateMovie = (
       .json({ message: `Required keys are: ${joinedKeys}` });
   }
 
+  if (typeof request.body.name !== "string" || request.body.name.length > 50) {
+    return response
+      .status(400)
+      .json({ message: `Name should be a string with 50 characters maximum` });
+  }
+
+  if (typeof request.body.duration !== "number") {
+    return response
+      .status(400)
+      .json({ message: `Duration should be a number` });
+  }
+
+  if (typeof request.body.price !== "number") {
+    return response.status(400).json({ message: `Price should be a number` });
+  }
+
   return next();
 };
 
