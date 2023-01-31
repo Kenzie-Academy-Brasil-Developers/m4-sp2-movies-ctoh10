@@ -41,7 +41,7 @@ export const validateMovie = (
   return next();
 };
 
-export const movieExists = async (
+export const movieAlreadyExists = async (
   request: Request,
   response: Response,
   next: NextFunction

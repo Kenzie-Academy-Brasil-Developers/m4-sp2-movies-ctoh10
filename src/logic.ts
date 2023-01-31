@@ -42,3 +42,9 @@ export const listMovies = async (
   ).rows;
   return response.json(moviesList);
 };
+
+// UPDATE
+//      clientes
+// SET
+//      (%I) = ROW(%L)
+// WHERE id = 1;
