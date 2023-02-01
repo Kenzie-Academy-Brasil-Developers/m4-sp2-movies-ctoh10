@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { QueryConfig } from "pg";
 import format from "pg-format";
 import { client } from "./database";
 import { iAddMovieResponse, iMovieRequest, iMovieRespose } from "./interfaces";
@@ -33,17 +34,28 @@ export const listMovies = async (
   let page: number | undefined = Number(request.query.page);
   let perPage: number | undefined = Number(request.query.perPage);
 
-  page < 1 || Number.isNaN(page) ? (page = 0) : page;
+  page <= 1 || Number.isNaN(page) ? (page = 1) : page;
   perPage < 0 || perPage > 5 || Number.isNaN(perPage) ? (perPage = 5) : perPage;
 
   const queryOrder: string = `
             SELECT
                 *
             FROM
-                movies;
+                movies
+            OFFSET $1 LIMIT $2;
             `;
 
-  const moviesList: iMovieRespose[] | void = (await client.query(queryOrder))
+  const queryConfig: QueryConfig = {
+    text: queryOrder,
+    values: [perPage * (page - 1), perPage],
+  };
+
+  const moviesList: iMovieRespose[] | void = (await client.query(queryConfig))
     .rows;
+
+  if (moviesList.length === 0) {
+    return response.status(404).json({ message: "No movies found" });
+  }
+
   return response.json(moviesList);
 };
