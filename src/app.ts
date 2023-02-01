@@ -1,6 +1,6 @@
 import express, { Application } from "express";
 import { startDatabase } from "./database";
-import { addMovie, listMovies } from "./logic";
+import { listMovies, addMovie } from "./functions";
 import { movieExists, validateMovie } from "./middlewares";
 
 const app: Application = express();
