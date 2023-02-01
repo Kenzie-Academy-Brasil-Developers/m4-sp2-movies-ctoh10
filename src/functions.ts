@@ -36,7 +36,7 @@ export const listMovies = async (
   let page: number | undefined = Number(request.query.page);
   let perPage: number | undefined = Number(request.query.perPage);
 
-  let sort = request.query.sort;
+  let sort: string = request.query.sort?.toString().toLowerCase() || "";
   let order: string = request.query.order?.toString().toUpperCase() || "ASC";
 
   sort === "price" || sort === "duration" ? sort : (sort = "");
@@ -80,7 +80,7 @@ export const listMovies = async (
     return response.status(404).json({ message: "No movies found" });
   }
 
-  const nextPage = Number(request.query.page) === 0 ? 1 : page + 1;
+  const nextPage: number = Number(request.query.page) === 0 ? 1 : page + 1;
 
   return response.json({
     previousPage:
