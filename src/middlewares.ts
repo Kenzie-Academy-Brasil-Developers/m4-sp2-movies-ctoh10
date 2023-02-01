@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { QueryConfig } from "pg";
 import { client } from "./database";
 import { iMovieRespose, iRequiredMovieKeys } from "./interfaces";
 
@@ -46,18 +47,24 @@ export const movieExists = async (
   response: Response,
   next: NextFunction
 ): Promise<Response | void> => {
-  const queryString = `
+  const queryString: string = `
             SELECT
                 *
             FROM
                 movies
+            WHERE
+              name = $1;
             `;
 
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [request.body.name],
+  };
   const allMovies: iMovieRespose[] | void = await (
-    await client.query(queryString)
+    await client.query(queryConfig)
   ).rows;
 
-  const exists = allMovies.find(
+  const exists: iMovieRespose | undefined = allMovies.find(
     (movieName: iMovieRespose) => movieName.name === request.body.name
   );
   if (exists) {

@@ -30,6 +30,12 @@ export const listMovies = async (
   request: Request,
   response: Response
 ): Promise<Response> => {
+  let page: number | undefined = Number(request.query.page);
+  let perPage: number | undefined = Number(request.query.perPage);
+
+  page < 1 || Number.isNaN(page) ? (page = 0) : page;
+  perPage < 0 || perPage > 5 || Number.isNaN(perPage) ? (perPage = 5) : perPage;
+
   const queryOrder: string = `
             SELECT
                 *
@@ -37,8 +43,7 @@ export const listMovies = async (
                 movies
             `;
 
-  const moviesList: iMovieRespose[] | void = await (
-    await client.query(queryOrder)
-  ).rows;
+  const moviesList: iMovieRespose[] | void = (await client.query(queryOrder))
+    .rows;
   return response.json(moviesList);
 };
