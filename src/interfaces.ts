@@ -7,11 +7,11 @@ export interface iMovieRequest {
   price: number;
 }
 
-export interface iMovieRespose extends iMovieRequest {
+export interface iMovieResponse extends iMovieRequest {
   id: number;
 }
 
-export type iAddMovieResponse = QueryResult<iMovieRespose>;
+export type iAddMovieResponse = QueryResult<iMovieResponse>;
 
 export type iRequiredMovieKeys = "name" | "duration" | "price";
 

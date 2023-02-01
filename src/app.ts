@@ -16,7 +16,14 @@ const message: string = `Server is running on http://localhost:${portNumber}`;
 
 app.get("/movies", listMovies);
 app.post("/movies", movieNameExists, validateMovie, addMovie);
-app.patch("/movies/:id", checkMovieID, updateValidation, updateMovie);
+app.patch(
+  "/movies/:id",
+  checkMovieID,
+  updateValidation,
+  movieNameExists,
+  updateMovie
+);
+app.delete("/movies/:id", checkMovieID);
 
 app.listen(portNumber, async () => {
   await startDatabase();

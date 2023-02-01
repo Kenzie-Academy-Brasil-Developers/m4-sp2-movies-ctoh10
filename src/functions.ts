@@ -2,7 +2,12 @@ import { Request, Response } from "express";
 import { QueryConfig, QueryResult } from "pg";
 import format from "pg-format";
 import { client } from "./database";
-import { iAddMovieResponse, iMovieRequest, iMovieRespose } from "./interfaces";
+import {
+  iAddMovieResponse,
+  iMovieRequest,
+  iMovieResponse,
+  iRequiredUpdate,
+} from "./interfaces";
 
 export const addMovie = async (
   request: Request,
@@ -21,10 +26,8 @@ export const addMovie = async (
     Object.values(movieDataRequest)
   );
 
-  console.log(queryString);
-
   const queryResponse: iAddMovieResponse = await client.query(queryString);
-  const newMovie: iMovieRespose = queryResponse.rows[0];
+  const newMovie: iMovieResponse = queryResponse.rows[0];
 
   return response.status(201).json(newMovie);
 };
@@ -73,7 +76,7 @@ export const listMovies = async (
           perPage
         );
 
-  const moviesQuery: QueryResult<iMovieRespose> = await client.query(
+  const moviesQuery: QueryResult<iMovieResponse> = await client.query(
     queryString
   );
   if (moviesQuery.rows.length === 0) {
@@ -100,5 +103,26 @@ export const updateMovie = async (
   request: Request,
   response: Response
 ): Promise<Response> => {
-  return response.json(request.body);
+  const updateKeysRequest: string[] = Object.keys(request.body);
+  const updateValuesRequest: string[] = Object.values(request.body);
+  const id: number = Number(request.params.id);
+
+  const queryTemp: string = `
+    UPDATE
+      movies
+    SET (%I) = ROW(%L)
+    WHERE id = $1
+    RETURNING *;
+`;
+
+  const queryFormat: string = format(
+    queryTemp,
+    updateKeysRequest,
+    updateValuesRequest
+  );
+  const queryConfig: QueryConfig = { text: queryFormat, values: [id] };
+
+  const queryResponse: QueryResult = await client.query(queryConfig);
+
+  return response.json(queryResponse.rows);
 };

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { QueryConfig } from "pg";
 import { client } from "./database";
 import {
-  iMovieRespose,
+  iMovieResponse,
   iRequiredMovieKeys,
   iRequiredUpdate,
 } from "./interfaces";
@@ -126,12 +126,12 @@ export const movieNameExists = async (
     text: queryString,
     values: [request.body.name],
   };
-  const allMovies: iMovieRespose[] | void = await (
+  const allMovies: iMovieResponse[] | void = await (
     await client.query(queryConfig)
   ).rows;
 
-  const exists: iMovieRespose | undefined = allMovies.find(
-    (movieName: iMovieRespose) => movieName.name === request.body.name
+  const exists: iMovieResponse | undefined = allMovies.find(
+    (movieName: iMovieResponse) => movieName.name === request.body.name
   );
 
   if (exists) {
@@ -162,12 +162,12 @@ export const checkMovieID = async (
     text: queryString,
     values: [request.params.id],
   };
-  const allMovies: iMovieRespose[] | void = await (
+  const allMovies: iMovieResponse[] | void = await (
     await client.query(queryConfig)
   ).rows;
 
-  const exists: iMovieRespose | undefined = allMovies.find(
-    (movieName: iMovieRespose) => movieName.id === id
+  const exists: iMovieResponse | undefined = allMovies.find(
+    (movieName: iMovieResponse) => movieName.id === id
   );
 
   if (exists) {
