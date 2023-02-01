@@ -1,7 +1,12 @@
 import express, { Application } from "express";
 import { startDatabase } from "./database";
-import { listMovies, addMovie } from "./functions";
-import { movieExists, validateMovie } from "./middlewares";
+import { listMovies, addMovie, updateMovie } from "./functions";
+import {
+  checkMovieID,
+  movieNameExists,
+  updateValidation,
+  validateMovie,
+} from "./middlewares";
 
 const app: Application = express();
 app.use(express.json());
@@ -10,7 +15,8 @@ const portNumber: number = 3000;
 const message: string = `Server is running on http://localhost:${portNumber}`;
 
 app.get("/movies", listMovies);
-app.post("/movies", movieExists, validateMovie, addMovie);
+app.post("/movies", movieNameExists, validateMovie, addMovie);
+app.patch("/movies/:id", checkMovieID, updateValidation, updateMovie);
 
 app.listen(portNumber, async () => {
   await startDatabase();

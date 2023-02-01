@@ -95,3 +95,10 @@ export const listMovies = async (
     data: moviesQuery.rows,
   });
 };
+
+export const updateMovie = async (
+  request: Request,
+  response: Response
+): Promise<Response> => {
+  return response.json(request.body);
+};
