@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { QueryConfig } from "pg";
+import { QueryConfig, QueryResult } from "pg";
 import format from "pg-format";
 import { client } from "./database";
 import { iAddMovieResponse, iMovieRequest, iMovieRespose } from "./interfaces";
@@ -9,7 +9,7 @@ export const addMovie = async (
   response: Response
 ): Promise<Response> => {
   const movieDataRequest: iMovieRequest = request.body;
-  const queryOrder: string = format(
+  const queryString: string = format(
     `
         INSERT INTO
             movies(%I)
@@ -21,7 +21,9 @@ export const addMovie = async (
     Object.values(movieDataRequest)
   );
 
-  const queryResponse: iAddMovieResponse = await client.query(queryOrder);
+  console.log(queryString);
+
+  const queryResponse: iAddMovieResponse = await client.query(queryString);
   const newMovie: iMovieRespose = queryResponse.rows[0];
 
   return response.status(201).json(newMovie);
@@ -34,28 +36,62 @@ export const listMovies = async (
   let page: number | undefined = Number(request.query.page);
   let perPage: number | undefined = Number(request.query.perPage);
 
+  let sort = request.query.sort;
+  let order: string = request.query.order?.toString().toUpperCase() || "ASC";
+
+  sort === "price" || sort === "duration" ? sort : (sort = "");
+  sort === "" ? (order = "") : sort;
+
   page <= 1 || Number.isNaN(page) ? (page = 1) : page;
   perPage < 0 || perPage > 5 || Number.isNaN(perPage) ? (perPage = 5) : perPage;
 
-  const queryOrder: string = `
-            SELECT
-                *
-            FROM
-                movies
-            OFFSET $1 LIMIT $2;
-            `;
+  let queryString: string =
+    order === "" && sort === ""
+      ? format(
+          `
+      SELECT 
+        *
+      FROM
+        movies
+      OFFSET %s LIMIT %s;
+  `,
+          perPage * (page - 1),
+          perPage
+        )
+      : format(
+          `
+      SELECT 
+        *
+      FROM
+        movies
+      ORDER BY %I %s
+      OFFSET %s LIMIT %s;
+  `,
+          sort,
+          order,
+          perPage * (page - 1),
+          perPage
+        );
 
-  const queryConfig: QueryConfig = {
-    text: queryOrder,
-    values: [perPage * (page - 1), perPage],
-  };
-
-  const moviesList: iMovieRespose[] | void = (await client.query(queryConfig))
-    .rows;
-
-  if (moviesList.length === 0) {
+  const moviesQuery: QueryResult<iMovieRespose> = await client.query(
+    queryString
+  );
+  if (moviesQuery.rows.length === 0) {
     return response.status(404).json({ message: "No movies found" });
   }
 
-  return response.json(moviesList);
+  const nextPage = Number(request.query.page) === 0 ? 1 : page + 1;
+
+  return response.json({
+    previousPage:
+      perPage * (page - 1) === 0
+        ? null
+        : `http://localhost:3000/movies?page=${page - 1}&perPage=${perPage}`,
+    nextPage:
+      moviesQuery.rowCount < perPage
+        ? null
+        : `http://localhost:3000/movies?page=${nextPage}&perPage=${perPage}`,
+    count: moviesQuery.rowCount,
+    data: moviesQuery.rows,
+  });
 };
