@@ -40,7 +40,7 @@ export const listMovies = async (
             SELECT
                 *
             FROM
-                movies
+                movies;
             `;
 
   const moviesList: iMovieRespose[] | void = (await client.query(queryOrder))
