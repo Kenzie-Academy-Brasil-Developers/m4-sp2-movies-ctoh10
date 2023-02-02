@@ -1,6 +1,6 @@
 import express, { Application } from "express";
 import { startDatabase } from "./database";
-import { listMovies, addMovie, updateMovie } from "./functions";
+import { listMovies, addMovie, updateMovie, deleteMovie } from "./functions";
 import {
   checkMovieID,
   movieNameExists,
@@ -23,7 +23,7 @@ app.patch(
   movieNameExists,
   updateMovie
 );
-app.delete("/movies/:id", checkMovieID);
+app.delete("/movies/:id", checkMovieID, deleteMovie);
 
 app.listen(portNumber, async () => {
   await startDatabase();

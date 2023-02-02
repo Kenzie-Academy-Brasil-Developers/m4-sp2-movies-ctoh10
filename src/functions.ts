@@ -126,3 +126,24 @@ export const updateMovie = async (
 
   return response.json(queryResponse.rows);
 };
+
+export const deleteMovie = async (
+  request: Request,
+  response: Response
+): Promise<Response> => {
+  const id: number = Number(request.params.id);
+
+  const queryTemp: string = `
+  DELETE FROM
+    movies
+    WHERE
+    id = $1
+  `;
+  const queryConfig: QueryConfig = {
+    text: queryTemp,
+    values: [id],
+  };
+
+  await client.query(queryConfig);
+  return response.status(204).json();
+};
