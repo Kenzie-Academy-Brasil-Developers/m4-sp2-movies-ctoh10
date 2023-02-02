@@ -124,7 +124,7 @@ export const updateMovie = async (
 
   const queryResponse: QueryResult = await client.query(queryConfig);
 
-  return response.json(queryResponse.rows);
+  return response.json(queryResponse.rows[0]);
 };
 
 export const deleteMovie = async (
