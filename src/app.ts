@@ -24,6 +24,8 @@ app.patch(
   updateMovie
 );
 app.delete("/movies/:id", checkMovieID, deleteMovie);
+app.patch("/movies/", checkMovieID);
+app.delete("/movies/", checkMovieID);
 
 app.listen(portNumber, async () => {
   await startDatabase();
