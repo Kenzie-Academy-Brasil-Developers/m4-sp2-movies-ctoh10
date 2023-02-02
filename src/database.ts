@@ -12,6 +12,3 @@ export const startDatabase = () => {
   client.connect();
   console.log("Database successfully connected");
 };
-
-// client.end();
-// console.log("Connection to dabatase ended");
