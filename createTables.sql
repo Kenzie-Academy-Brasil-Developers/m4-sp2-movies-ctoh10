@@ -1,0 +1,9 @@
+CREATE DATABASE movies;
+
+CREATE TABLE IF NOT EXISTS movies(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT DEFAULT NULL,
+    duration INTEGER NOT NULL,
+    price INTEGER NOT NULL
+);
