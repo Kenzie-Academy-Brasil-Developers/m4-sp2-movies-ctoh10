@@ -149,6 +149,13 @@ export const checkMovieID = async (
   next: NextFunction
 ): Promise<Response | void> => {
   const id: number = Number(request.params.id);
+
+  if (Number.isNaN(id)) {
+    return response
+      .status(400)
+      .json({ message: "ID parameter must be a number" });
+  }
+
   const queryString: string = `
             SELECT
                 *
@@ -167,7 +174,7 @@ export const checkMovieID = async (
   ).rows;
 
   const exists: iMovieResponse | undefined = allMovies.find(
-    (movieName: iMovieResponse) => movieName.id === id
+    (movieName: iMovieResponse) => Number(movieName.id) === id
   );
 
   if (exists) {

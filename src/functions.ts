@@ -46,7 +46,9 @@ export const listMovies = async (
   sort === "" ? (order = "") : sort;
 
   page <= 1 || Number.isNaN(page) ? (page = 1) : page;
-  perPage < 0 || perPage > 5 || Number.isNaN(perPage) ? (perPage = 5) : perPage;
+  perPage <= 0 || perPage > 5 || Number.isNaN(perPage)
+    ? (perPage = 5)
+    : perPage;
 
   let queryString: string =
     order === "" && sort === ""
