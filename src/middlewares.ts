@@ -167,7 +167,7 @@ export const checkMovieID = async (
 
   const queryConfig: QueryConfig = {
     text: queryString,
-    values: [request.params.id],
+    values: [id],
   };
   const allMovies: iMovieResponse[] | void = await (
     await client.query(queryConfig)
@@ -177,9 +177,9 @@ export const checkMovieID = async (
     (movieName: iMovieResponse) => Number(movieName.id) === id
   );
 
-  if (exists) {
-    return next();
+  if (!exists) {
+    return response.status(404).json({ message: `ID ${id} was not found` });
   }
 
-  return response.status(404).json({ message: `ID ${id} was not found` });
+  return next();
 };
